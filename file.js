@@ -29,7 +29,7 @@ function renderizaFogo() {
         for(let col = 0; col < fogoLargura; col++) {
             const pixelIndex = col + (fogoLargura * row)
             html += '<td>'
-            html += pixelIndex
+            html += `<div class="pixel-index">${pixelIndex}</div>`
             html += '</td>'
         }
         html += '</tr>'
