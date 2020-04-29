@@ -4,7 +4,9 @@ const fogoAltura = 10
 
 function start() {
     criaEstruturaFogo()    
-    renderizaFogo();
+    createFireSource()
+    renderizaFogo()
+    setInterval(calculaPropagacaoFogo, 1000)
 }
 
 function criaEstruturaFogo() {
@@ -17,7 +19,28 @@ function criaEstruturaFogo() {
 }
 
 function calculaPropagacaoFogo() {
+    let pixelIndex = 0
+    for(let column=0;column<fogoLargura;column++) {
+        for(let row=0;row<fogoAltura;row++) {
+            pixelIndex = column + (fogoLargura * row)
 
+            updateFireIntensityPerPixel(pixelIndex)
+        }
+    }
+
+    renderizaFogo()
+}
+
+function updateFireIntensityPerPixel(currentPixelIndex) {
+    const belowPixelIndex = currentPixelIndex + fogoLargura
+    if(belowPixelIndex >= fogoLargura * fogoAltura) {
+        return
+    }
+    const decay = 1
+    const belowPixelFireIntensity = fogoPixelArray[belowPixelIndex]
+    const newFireIntensity = belowPixelFireIntensity - decay
+
+    fogoPixelArray[currentPixelIndex] = newFireIntensity
 }
 
 function renderizaFogo() {
@@ -28,8 +51,11 @@ function renderizaFogo() {
 
         for(let col = 0; col < fogoLargura; col++) {
             const pixelIndex = col + (fogoLargura * row)
+            const fireIntensity = fogoPixelArray[pixelIndex]
+
             html += '<td>'
             html += `<div class="pixel-index">${pixelIndex}</div>`
+            html += fireIntensity
             html += '</td>'
         }
         html += '</tr>'
@@ -40,4 +66,14 @@ function renderizaFogo() {
     // document.getElementById('fogoCanvar').innetHTML = 'oi'
 }
 
-start()
+function createFireSource() {
+    const overflowPixelIndex = fogoLargura * fogoAltura
+    let pixelIndex = 0
+    for(let column=0;column <= fogoLargura; column++) {
+        pixelIndex = (overflowPixelIndex - fogoLargura) + column
+        fogoPixelArray[pixelIndex] = 36
+    }
+}
+
+
+start() 
